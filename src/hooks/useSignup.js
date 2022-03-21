@@ -1,6 +1,7 @@
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth"
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
 import { useEffect, useState } from "react"
-import { projectAuth } from "../firebase/config"
+import { projectAuth, projectStorage } from "../firebase/config"
 import { useAuthContext } from "../hooks/useAuthContext"
 
 const useSignup = () => {
@@ -9,7 +10,7 @@ const useSignup = () => {
   const { dispatch } = useAuthContext()
   const [isCancelled, setIsCancelled] = useState(false)
 
-  const signup = async (email, password, displayName) => {
+  const signup = async (email, password, displayName, thumbnail) => {
     setError(null)
     setIsPending(true)
 
@@ -18,7 +19,14 @@ const useSignup = () => {
       if(!res) {
         throw new Error('Could not signup with email and password')
       }
-      await updateProfile(res.user, { displayName })
+
+      const filePath = `thumbnails/${res.user.uid}/${thumbnail.name}`
+      const storageRef = ref(projectStorage, filePath)
+
+      await uploadBytes(storageRef, thumbnail)
+      const photoURL = await getDownloadURL(storageRef)
+      
+      await updateProfile(res.user, { displayName, photoURL })
       dispatch({ type: 'LOGIN', payload: res.user })
 
       if(!isCancelled) {
@@ -37,7 +45,7 @@ const useSignup = () => {
 
   useEffect(() => {
     return () => setIsCancelled(true) // Cleanup function
-  })
+  }, [])
 
   return { error, isPending, signup }
 }
