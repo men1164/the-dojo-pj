@@ -1,7 +1,8 @@
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth"
+import { doc, setDoc } from "firebase/firestore"
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
 import { useEffect, useState } from "react"
-import { projectAuth, projectStorage } from "../firebase/config"
+import { projectAuth, projectStorage, projectFirestore } from "../firebase/config"
 import { useAuthContext } from "../hooks/useAuthContext"
 
 const useSignup = () => {
@@ -27,6 +28,13 @@ const useSignup = () => {
       const photoURL = await getDownloadURL(storageRef)
       
       await updateProfile(res.user, { displayName, photoURL })
+
+      await setDoc(doc(projectFirestore, "users", res.user.uid), {
+        online: true,
+        displayName,
+        photoURL
+      })
+
       dispatch({ type: 'LOGIN', payload: res.user })
 
       if(!isCancelled) {
