@@ -18,7 +18,7 @@ export const useCollection = (collectionName, _qr) => {
     const unsub = onSnapshot(ref, snap => {
       let results = []
       snap.docs.forEach(doc => {
-        doc.data().createdAt && results.push({ ...doc.data(), docId: doc.id })
+        results.push({ ...doc.data(), docId: doc.id })
         // results.push({ ...doc.data(), docId: doc.id })
       })
 

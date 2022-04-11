@@ -11,6 +11,7 @@ import Sidebar from './components/Sidebar';
 
 import './App.css'
 import { useAuthContext } from './hooks/useAuthContext';
+import Online from './components/Online';
 
 function App() {
   const { user, authIsReady } = useAuthContext()
@@ -44,6 +45,7 @@ function App() {
               </Route>
             </Switch>
           </div>
+          {user && <Online />}
         </BrowserRouter>
       }
     </div>
