@@ -2,6 +2,8 @@ import './Create.css'
 import { useEffect, useState } from 'react'
 import Select from 'react-select'
 import { useCollection } from '../../hooks/useCollection'
+import { Timestamp } from 'firebase/firestore'
+import { useAuthContext } from '../../hooks/useAuthContext'
 
 const categories = [
   { value: "development", label: "Development" },
@@ -17,6 +19,7 @@ export default function Create() {
   const [category, setCategory] = useState('')
   const [assignedUsers, setAssignedUsers] = useState([])
   const [error, setError] = useState(null)
+  const { user } = useAuthContext()
   
   const { documents } = useCollection('users')
   const [users, setUsers] = useState([])
@@ -44,7 +47,27 @@ export default function Create() {
       return
     }
 
-    console.log(name, details, dueDate, category.value, assignedUsers)
+    // Clean data
+    const createdBy = {
+      displayName: user.displayName,
+      photoURL: user.photoURL,
+      id: user.uid
+    }
+    const assignedUsersList = assignedUsers.map(u => {
+      return { displayName: u.value.displayName, photoURL: u.value.photoURL, id: u.value.docId }
+    })
+
+    const project = {
+      name,
+      details,
+      category: category.value,
+      dueDate: Timestamp.fromDate(new Date(dueDate)),
+      comments: [],
+      createdBy,
+      assignedUsersList
+    }
+
+    console.log(project)
   }
 
   return (
