@@ -16,6 +16,7 @@ export default function Create() {
   const [dueDate, setDueDate] = useState('')
   const [category, setCategory] = useState('')
   const [assignedUsers, setAssignedUsers] = useState([])
+  const [error, setError] = useState(null)
   
   const { documents } = useCollection('users')
   const [users, setUsers] = useState([])
@@ -31,6 +32,18 @@ export default function Create() {
 
   const handleSubmit = e => {
     e.preventDefault()
+    setError(null)
+    
+    if(!category) {
+      setError("Please select project's category")
+      return
+    }
+
+    if(assignedUsers.length < 1) {
+      setError("Please assign this project to a user")
+      return
+    }
+
     console.log(name, details, dueDate, category.value, assignedUsers)
   }
 
@@ -59,6 +72,7 @@ export default function Create() {
           <Select onChange={option => setAssignedUsers(option)} options={users} isMulti />
         </label>
         <button className="btn">Add</button>
+        {error && <p className="error">{error}</p>}
       </form>
     </div>
   )
