@@ -1,6 +1,15 @@
 import Avatar from '../../components/Avatar'
+import { useAuthContext } from '../../hooks/useAuthContext'
+import { useFirestore } from '../../hooks/useFirestore'
 
 export default function ProjectSummary({ project }) {
+  const { deleteDocument } = useFirestore("projects")
+  const { user } = useAuthContext()
+
+  const handleClick = e => {
+    deleteDocument(project.docId)
+  }
+
   return (
     <div>
       <div className="project-summary">
@@ -21,6 +30,7 @@ export default function ProjectSummary({ project }) {
             </div>
           ))}
         </div>
+        {user.uid === project.createdBy.id && (<button className="btn" onClick={handleClick}>Mark as complete</button>)}
       </div>
     </div>
   )

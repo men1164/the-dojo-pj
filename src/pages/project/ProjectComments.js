@@ -16,7 +16,7 @@ export default function ProjectComments({ project }) {
 
     const newComment = {
       displayName: user.displayName,
-      id: user.uid,
+      id: Math.random() * 100,
       photoURL: user.photoURL,
       content: comment,
       createdAt: Timestamp.fromDate(new Date())
