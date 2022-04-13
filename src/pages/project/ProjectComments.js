@@ -1,5 +1,7 @@
+import { formatDistanceToNow } from "date-fns"
 import { Timestamp } from "firebase/firestore"
 import { useState } from "react"
+import Avatar from "../../components/Avatar"
 import { useAuthContext } from "../../hooks/useAuthContext"
 import { useFirestore } from "../../hooks/useFirestore"
 
@@ -32,6 +34,22 @@ export default function ProjectComments({ project }) {
   return (
     <div className="project-comments">
       <h4>Project Comments</h4>
+      <ul>
+        {project.comments.length > 0 && project.comments.map(com => (
+          <li key={com.id}>
+            <div className="comment-author">
+              <Avatar src={com.photoURL} />
+              <p>{com.displayName}</p>
+            </div>
+            <div className="comment-date">
+              <p>{ formatDistanceToNow(com.createdAt.toDate(), { addSuffix: true }) }</p>
+            </div>
+            <div className="comment-content">
+              <p>{com.content}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
       <form className="add-comment" onSubmit={handleSubmit}>
         <label>
           <span>Add new comment</span>
