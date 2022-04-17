@@ -1,19 +1,23 @@
 import Avatar from '../../components/Avatar'
 import { useAuthContext } from '../../hooks/useAuthContext'
 import { useFirestore } from '../../hooks/useFirestore'
+import { useHistory } from 'react-router-dom'
 
 export default function ProjectSummary({ project }) {
   const { deleteDocument } = useFirestore("projects")
   const { user } = useAuthContext()
+  const history = useHistory()
 
-  const handleClick = e => {
+  const handleClick = () => {
     deleteDocument(project.docId)
+    history.push('/')
   }
 
   return (
     <div>
       <div className="project-summary">
         <h2 className="page-title">{project.name}</h2>
+        <p>By {project.createdBy.displayName}</p>
         <p className="due-date">
           Project due by {project.dueDate.toDate().toDateString()}
         </p>
