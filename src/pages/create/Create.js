@@ -1,6 +1,6 @@
 import './Create.css'
 import { useEffect, useState } from 'react'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import Select from 'react-select'
 import { useCollection } from '../../hooks/useCollection'
 import { Timestamp } from 'firebase/firestore'
@@ -28,7 +28,7 @@ export default function Create() {
   const { documents } = useCollection('users')
   const [users, setUsers] = useState([])
 
-  const history = useHistory()
+  const navigate = useNavigate()
 
   useEffect(() => {
     if(documents) {
@@ -75,7 +75,7 @@ export default function Create() {
 
     await addDocument(project)
     if(!response.error) {
-      history.push('/')
+      navigate('/')
     }
   }
 

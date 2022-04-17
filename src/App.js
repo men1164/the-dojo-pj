@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 
 import Dashboard from './pages/dashboard/Dashboard';
 import Login from './pages/login/Login';
@@ -22,28 +22,13 @@ function App() {
           {user && <Sidebar />}
           <div className='container'>
             <Navbar />
-            <Switch>
-              <Route exact path="/">
-                {user && <Dashboard />}
-                {!user && <Redirect to="/login" />}
-              </Route>
-              <Route path="/login">
-                {user && <Redirect to="/" />}
-                {!user && <Login />}
-              </Route>
-              <Route path="/signup">
-                {user && <Redirect to="/" />}
-                {!user && <Signup />}
-              </Route>
-              <Route path="/create">
-                {user && <Create />}
-                {!user && <Redirect to="/login" />}
-              </Route>
-              <Route path="/project/:id">
-                {user && <Project />}
-                {!user && <Redirect to="/login" />}
-              </Route>
-            </Switch>
+            <Routes>
+              <Route path="/" element={user ? <Dashboard /> : <Navigate to="/login" />} />
+              <Route path="/login" element={user ? <Navigate to="/" /> : <Login />} />
+              <Route path="/signup" element={user ? <Navigate to="/" /> : <Signup />} />
+              <Route path="/create" element={user ? <Create /> : <Navigate to="/login" />} />
+              <Route path="/project/:id" element={user ? <Project /> : <Navigate to="/login" />} />
+            </Routes>
           </div>
           {user && <Online />}
         </BrowserRouter>
